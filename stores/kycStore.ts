@@ -3,11 +3,11 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 type KycStatus = "incomplete" | "in_progress" | "complete";
 
-type FormDataType = {
+export type FormDataType = {
   name: string;
   email: string;
   phone: string;
-  DOB: number;
+  dob: string;
   address: string;
   selfie: string | undefined;
   identityCard: string | undefined;
@@ -17,6 +17,8 @@ type KYCStoreState = {
   formData: Partial<FormDataType>;
   kycStatus: KycStatus;
   lastCompletedStep: number | null;
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
   setLastCompletedStep: (stepNumber: number) => void;
   setFormData: (data: Partial<FormDataType>) => void;
   setKycStatus: (status: KycStatus) => void;
@@ -29,7 +31,11 @@ export const useKYCStore = create<KYCStoreState>()(
     (set) => ({
       formData: {},
       kycStatus: "incomplete",
+      _hasHydrated: false,
       lastCompletedStep: null,
+      setHasHydrated: (state: boolean) => {
+        set({ _hasHydrated: state });
+      },
       setLastCompletedStep(stepNumber) {
         set({ lastCompletedStep: stepNumber });
       },
@@ -51,6 +57,12 @@ export const useKYCStore = create<KYCStoreState>()(
         set({ formData: {}, lastCompletedStep: null });
       },
     }),
-    { name: "KYCStore", storage: createJSONStorage(() => AsyncStorage) }
+    {
+      name: "KYCStore",
+      storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: (state) => {
+        return () => state.setHasHydrated(true);
+      },
+    }
   )
 );
