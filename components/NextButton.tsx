@@ -21,11 +21,13 @@ const NextButton = ({
       router.push(nextRoute);
       setFormData(getValues());
     }
-    
   };
   return (
-    <TouchableOpacity onPress={handlePress}>
-      <Text>Next</Text>
+    <TouchableOpacity
+      onPress={handlePress}
+      style={{ backgroundColor: "#004AAD", borderRadius: 12, padding: 10 }}
+    >
+      <Text style={{ color: "white" }}>Next</Text>
     </TouchableOpacity>
   );
 };
