@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Screen = () => {
   const {
@@ -13,6 +14,10 @@ const Screen = () => {
     formState: { errors },
   } = useFormContext();
   const [show, setShow] = useState(false);
+  const {fromReview} = useLocalSearchParams<{fromReview?: string}>()
+
+    const nextRoute = fromReview === 'true' ? '/onboarding/review' : '/onboarding/step2'
+
 
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
@@ -113,7 +118,8 @@ const Screen = () => {
       <NextButton
         trigger={trigger}
         fields={["name", "email", "phone", "dob"]}
-        nextRoute="/onboarding/step2"
+        nextRoute={nextRoute}
+        lastCompletedStep={1}
       />
     </SafeAreaView>
   );

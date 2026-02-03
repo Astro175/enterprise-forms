@@ -8,18 +8,22 @@ const NextButton = ({
   trigger,
   fields,
   nextRoute,
+  lastCompletedStep
 }: {
   trigger: (name?: string | string[]) => Promise<boolean>;
   fields: string[];
   nextRoute: string;
+  lastCompletedStep: number;
 }) => {
   const setFormData = useKYCStore((state) => state.setFormData);
+  const setLastCompletedStep = useKYCStore(state => state.setLastCompletedStep)
   const { getValues } = useFormContext();
   const handlePress = async () => {
     const isValid = await trigger(fields);
     if (isValid) {
       router.push(nextRoute);
       setFormData(getValues());
+      setLastCompletedStep(lastCompletedStep)
     }
   };
   return (

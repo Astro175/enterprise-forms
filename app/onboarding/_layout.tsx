@@ -1,11 +1,11 @@
 import { useKYCStore } from "@/stores/kycStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { differenceInYears, parseISO } from "date-fns";
-import { Slot } from "expo-router";
+import { Redirect, Slot } from "expo-router";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { View } from "react-native";
-import z from "zod";
+import { ActivityIndicator, View } from "react-native";
+import * as z from "zod";
 
 const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -23,6 +23,8 @@ const schema = z.object({
   selfie: z.string(),
 });
 
+export type FormValues = z.infer<typeof schema>;
+
 export default function Layout() {
   const methods = useForm({
     resolver: zodResolver(schema),
@@ -39,6 +41,18 @@ export default function Layout() {
   });
   const formData = useKYCStore((state) => state.formData);
   const hasHydrated = useKYCStore((state) => state._hasHydrated);
+  const lastCompletedStep = useKYCStore((state) => state.lastCompletedStep);
+
+  if (!hasHydrated) {
+    return <ActivityIndicator />;
+  }
+
+  if (lastCompletedStep !== null) {
+    const nextStep = lastCompletedStep + 1;
+    if (nextStep <= 3) {
+      return <Redirect href={`/onboarding/step${nextStep}`} />;
+    }
+  }
 
   useEffect(() => {
     if (hasHydrated) {
@@ -55,7 +69,7 @@ export default function Layout() {
   }, [hasHydrated]);
 
   return (
-    <View style={{ flex: 1}}>
+    <View style={{ flex: 1 }}>
       <FormProvider {...methods}>
         <Slot />
       </FormProvider>
