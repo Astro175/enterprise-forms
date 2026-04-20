@@ -7,7 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { ActivityIndicator, View } from "react-native";
 import * as z from "zod";
 
-const schema = z.object({
+export const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.email("Email format is incorrect"),
   phone: z.string("Invalid phone number"),
@@ -25,7 +25,7 @@ const schema = z.object({
 
 export type FormValues = z.infer<typeof schema>;
 
-export default function Layout() {
+export default function OnboardingLayout() {
   const methods = useForm({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -43,17 +43,6 @@ export default function Layout() {
   const hasHydrated = useKYCStore((state) => state._hasHydrated);
   const lastCompletedStep = useKYCStore((state) => state.lastCompletedStep);
 
-  if (!hasHydrated) {
-    return <ActivityIndicator />;
-  }
-
-  if (lastCompletedStep !== null) {
-    const nextStep = lastCompletedStep + 1;
-    if (nextStep <= 3) {
-      return <Redirect href={`/onboarding/step${nextStep}`} />;
-    }
-  }
-
   useEffect(() => {
     if (hasHydrated) {
       methods.reset({
@@ -67,6 +56,17 @@ export default function Layout() {
       });
     }
   }, [hasHydrated]);
+
+  if (!hasHydrated) {
+    return <ActivityIndicator accessibilityLabel="Loading"/>;
+  }
+
+  if (lastCompletedStep !== null) {
+    const nextStep = lastCompletedStep + 1;
+    if (nextStep <= 3) {
+      return <Redirect href={`/onboarding/step${nextStep}`} />;
+    }
+  }
 
   return (
     <View style={{ flex: 1 }}>

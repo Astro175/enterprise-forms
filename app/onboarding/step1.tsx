@@ -2,22 +2,22 @@ import NextButton from "@/components/NextButton";
 import { ErrorMessage } from "@hookform/error-message";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
+import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-const Screen = () => {
+const StepOneScreen = () => {
   const {
     control,
     trigger,
     formState: { errors },
   } = useFormContext();
   const [show, setShow] = useState(false);
-  const {fromReview} = useLocalSearchParams<{fromReview?: string}>()
+  const { fromReview } = useLocalSearchParams<{ fromReview?: string }>();
 
-    const nextRoute = fromReview === 'true' ? '/onboarding/review' : '/onboarding/step2'
-
+  const nextRoute =
+    fromReview === "true" ? "/onboarding/review" : "/onboarding/step2";
 
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
@@ -135,4 +135,4 @@ const style = StyleSheet.create({
   inputTextFieldText: {},
 });
 
-export default Screen;
+export default StepOneScreen;

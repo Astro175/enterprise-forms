@@ -27,8 +27,6 @@ export default function IdentityVerificationScreen() {
   const onChangeRef = useRef<((...event: any[]) => void) | null>(null);
   
 
-  
-
   const pickDocument = async (onChange: (...event: any[]) => void) => {
     try {
       setIsIdProcessing(true);
