@@ -6,7 +6,6 @@ import {
   act,
   fireEvent,
   render,
-  renderHook,
   screen,
   waitFor,
 } from "@testing-library/react-native";
@@ -18,6 +17,14 @@ function TestWrapper({ children }: { children: ReactNode }) {
   const methods = useForm({ resolver: zodResolver(schema) });
   return <FormProvider {...methods}>{children}</FormProvider>;
 }
+
+let mockDateTimePickerOnChange: any = null;
+
+jest.mock("@react-native-community/datetimepicker", () => {
+  return function MockDateTimePicker({ onChange }: any) {
+    mockDateTimePickerOnChange = onChange;
+  };
+});
 
 jest.mock("expo-router", () => ({
   Redirect: jest.fn(() => null),
@@ -35,8 +42,9 @@ jest.mock("@react-native-async-storage/async-storage", () =>
 describe("Tests KYC Onboarding Flow", () => {
   beforeEach(() => {
     useKYCStore.setState({ _hasHydrated: false });
+    mockDateTimePickerOnChange = null;
     (Redirect as jest.Mock).mockClear();
-    (router.push as jest.Mock).mockClear()
+    (router.push as jest.Mock).mockClear();
   });
   it("Shows a loading spinner until hydration completes", () => {
     render(<OnboardingLayout />);
@@ -89,14 +97,10 @@ describe("Tests KYC Onboarding Flow", () => {
     });
   });
   it("Checks if the fields are correct, updates the store and navigate the user", async () => {
-    const { result: formResult } = renderHook(() =>
-      useForm({ resolver: zodResolver(schema) }),
-    );
-
     render(
-      <FormProvider {...formResult.current}>
+      <TestWrapper>
         <StepOneScreen />
-      </FormProvider>,
+      </TestWrapper>,
     );
 
     fireEvent.changeText(
@@ -111,8 +115,9 @@ describe("Tests KYC Onboarding Flow", () => {
       screen.getByPlaceholderText("Phone Number"),
       "09033769635",
     );
+    fireEvent.press(screen.getByText("Select Date"));
     act(() => {
-      formResult.current.setValue("dob", "2000-01-01");
+      mockDateTimePickerOnChange({}, new Date("2004-01-01"));
     });
 
     fireEvent.press(screen.getByText("Next"));
@@ -121,6 +126,34 @@ describe("Tests KYC Onboarding Flow", () => {
       expect(useKYCStore.getState().formData.name).toBe("Precious David");
       expect(useKYCStore.getState().lastCompletedStep).toBe(1);
       expect(router.push).toHaveBeenCalledWith("/onboarding/step2");
+    });
+  });
+  it("rejects DOB when user is under 18", async () => {
+    render(
+      <TestWrapper>
+        <StepOneScreen />
+      </TestWrapper>,
+    );
+
+    fireEvent.changeText(
+      screen.getByPlaceholderText("Full Name"),
+      "Precious Ajayi",
+    );
+    fireEvent.changeText(
+      screen.getByPlaceholderText("Email Address"),
+      "aspark400@gmail.com",
+    );
+    fireEvent.changeText(
+      screen.getByPlaceholderText("Phone Number"),
+      "09033769635",
+    );
+    fireEvent.press(screen.getByText("Select Date"));
+    act(() => {
+      mockDateTimePickerOnChange({}, new Date("2024-01-01"));
+    });
+    fireEvent.press(screen.getByText("Next"));
+    await waitFor(() => {
+      expect(screen.getByText("Must be at least 18 years old")).toBeTruthy();
     });
   });
 });

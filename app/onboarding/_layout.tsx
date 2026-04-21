@@ -14,7 +14,8 @@ export const schema = z.object({
   dob: z.iso.date().refine(
     (date) => {
       const age = differenceInYears(new Date(), parseISO(date));
-      if (age >= 18) return age;
+      if (age >= 18) return true;
+      return false
     },
     { message: "Must be at least 18 years old" },
   ),

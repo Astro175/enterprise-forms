@@ -11,11 +11,11 @@ const StepOneScreen = () => {
   const {
     control,
     trigger,
+    getValues,
     formState: { errors },
   } = useFormContext();
   const [show, setShow] = useState(false);
   const { fromReview } = useLocalSearchParams<{ fromReview?: string }>();
-
   const nextRoute =
     fromReview === "true" ? "/onboarding/review" : "/onboarding/step2";
 
