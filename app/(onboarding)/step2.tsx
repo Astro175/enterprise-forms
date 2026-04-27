@@ -50,7 +50,7 @@ const Screen = () => {
   const [error, setError] = useState("");
   const {fromReview} = useLocalSearchParams<{fromReview?: string}>()
 
-  const nextRoute = fromReview === 'true' ? '/onboarding/review' : '/onboarding/step2'
+  const nextRoute = fromReview === 'true' ? '/review' : '/step2'
 
   const getSuggestedAddresses = async (query: string) => {
     try {

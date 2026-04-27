@@ -82,7 +82,7 @@ export default function KycReviewScreen() {
       <SectionCard
         title="Identity Verification"
         subtitle="Uploaded ID card and selfie"
-        route='onboarding/step3?fromReview=true'
+        route='/step3?fromReview=true'
       >
         <View style={styles.imageRow}>
           <View style={styles.imageWrapper}>

@@ -1,5 +1,5 @@
-import OnboardingLayout, { schema } from "@/app/onboarding/_layout";
-import StepOneScreen from "@/app/onboarding/step1";
+import OnboardingLayout, { schema } from "@/app/(onboarding)/_layout";
+import StepOneScreen from "@/app/(onboarding)/step1";
 import { useKYCStore } from "@/stores/kycStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
