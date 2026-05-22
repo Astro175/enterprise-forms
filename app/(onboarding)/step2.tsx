@@ -1,6 +1,7 @@
 import NextButton from "@/components/NextButton";
+import { useLocalSearchParams } from "expo-router";
 import { debounce } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   ScrollView,
@@ -10,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
 
 export type LocationIQResult = {
   place_id: string;
@@ -48,9 +48,9 @@ const Screen = () => {
   const [addressValue, setAddressValue] = useState("");
   const [results, setResults] = useState<LocationIQResponse>([]);
   const [error, setError] = useState("");
-  const {fromReview} = useLocalSearchParams<{fromReview?: string}>()
-
-  const nextRoute = fromReview === 'true' ? '/review' : '/step2'
+  const { fromReview } = useLocalSearchParams<{ fromReview?: string }>();
+  const hasSelected = useRef(false);
+  const nextRoute = fromReview === "true" ? "/review" : "/step3";
 
   const getSuggestedAddresses = async (query: string) => {
     try {
@@ -81,8 +81,10 @@ const Screen = () => {
   );
 
   useEffect(() => {
-    if (addressValue.length > 2) {
-      debouncedFetch(addressValue);
+    if (!hasSelected.current) {
+      if (addressValue.length > 2) {
+        debouncedFetch(addressValue);
+      }
     }
     return () => debouncedFetch.cancel();
   }, [addressValue]);
@@ -102,7 +104,10 @@ const Screen = () => {
                   value={addressValue}
                   placeholder="Start typing your address"
                   placeholderTextColor="#9CA3AF"
-                  onChangeText={(newText) => setAddressValue(newText)}
+                  onChangeText={(newText) => {
+                    hasSelected.current = false;
+                    setAddressValue(newText);
+                  }}
                   style={styles.input}
                 />
               </View>
@@ -117,6 +122,7 @@ const Screen = () => {
                         index !== results.length - 1 && styles.divider,
                       ]}
                       onPress={() => {
+                        hasSelected.current = true;
                         setAddressValue(result.display_address);
                         onChange(result.display_address);
                         setResults([]);

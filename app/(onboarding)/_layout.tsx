@@ -4,8 +4,10 @@ import { differenceInYears, parseISO } from "date-fns";
 import { Slot } from "expo-router";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 import * as z from "zod";
+
+import { SplashScreen } from "expo-router";
 
 export const schema = z.object({
   name: z
@@ -27,6 +29,8 @@ export const schema = z.object({
 });
 
 export type FormValues = z.infer<typeof schema>;
+
+SplashScreen.preventAutoHideAsync();
 
 export default function OnboardingLayout() {
   const methods = useForm({
@@ -56,12 +60,9 @@ export default function OnboardingLayout() {
         selfie: formData.selfie,
         idCard: formData.identityCard,
       });
+      SplashScreen.hide();
     }
   }, [hasHydrated]);
-
-  if (!hasHydrated) {
-    return <ActivityIndicator accessibilityLabel="Loading" />;
-  }
 
   return (
     <View style={{ flex: 1 }}>

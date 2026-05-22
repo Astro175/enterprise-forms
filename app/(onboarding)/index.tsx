@@ -11,7 +11,5 @@ export default function OnboardingIndex() {
     }
   }
 
- 
-
   return <Redirect href="/step1" />;
 }
