@@ -47,9 +47,14 @@ const NextButton = ({
       role="button"
       accessibilityHint="Continues to the next step."
       onPress={handlePress}
-      style={{ backgroundColor: "#004AAD", borderRadius: 12, padding: 10 }}
+      style={{
+        backgroundColor: "#004AAD",
+        borderRadius: 12,
+        padding: 10,
+        alignItems: "center",
+      }}
     >
-      <Text style={{ color: "white" }}>Next</Text>
+      <Text style={{ color: "white", textAlign: "center" }}>Next</Text>
     </TouchableOpacity>
   );
 };

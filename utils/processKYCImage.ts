@@ -4,7 +4,7 @@ type IdentityType = "selfie" | "identity-card";
 
 export const processKYCImage = async (
   uri: string,
-  identityType: IdentityType
+  identityType: IdentityType,
 ): Promise<string> => {
   const context = ImageManipulator.manipulate(uri);
 
@@ -15,14 +15,16 @@ export const processKYCImage = async (
     format: SaveFormat.JPEG,
   });
 
-  // Object pointing to the file, I want to copy
+  const parts = new URL(result.uri).pathname.split("/").filter(Boolean);
 
-  const fileName = new URL(result.uri).pathname.split("/").pop();
+  const fileName = parts.at(-1);
+  const subdirectory = parts.at(-2);
 
-  if (!fileName) {
+  if (!fileName || !subdirectory) {
     throw new Error("Invalid file format");
   }
-  const pointerToResizedImage = new File(Paths.cache, fileName);
+  const pointerToResizedImage = new File(Paths.cache, subdirectory, fileName);
+
   const copiedFile =
     identityType === "selfie"
       ? new File(Paths.document, "kyc_selfie.jpg")

@@ -4,7 +4,6 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import * as DocumentPicker from "expo-document-picker";
 import React, { useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
   Image,
@@ -25,7 +24,6 @@ export default function IdentityVerificationScreen() {
   const [isSelfieProcessing, setIsSelfieProcessing] = useState(false);
   const { control, trigger } = useFormContext();
   const onChangeRef = useRef<((...event: any[]) => void) | null>(null);
-  
 
   const pickDocument = async (onChange: (...event: any[]) => void) => {
     try {
@@ -93,16 +91,48 @@ export default function IdentityVerificationScreen() {
 
   const renderCamera = () => {
     return (
-      <View>
-        <CameraView ref={CameraRef} facing="front" />
-        <View>
-          <Pressable onPress={takePicture}>
-            <View>
-              <Text>📷</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <CameraView ref={CameraRef} facing="front" style={{ flex: 1 }} />
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 30,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Pressable
+            onPress={takePicture}
+            style={({ pressed }) => ({
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <View
+              style={{
+                width: 85,
+                height: 85,
+                borderRadius: 999,
+                borderWidth: 5,
+                borderColor: "#fff",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "rgba(255,255,255,0.15)",
+              }}
+            >
+              <View
+                style={{
+                  width: 65,
+                  height: 65,
+                  borderRadius: 999,
+                  backgroundColor: "#fff",
+                }}
+              />
             </View>
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     );
   };
 
@@ -146,7 +176,9 @@ export default function IdentityVerificationScreen() {
                       <Text>{idUploadError}</Text>
                     </View>
                   ) : (
-                    <View>
+                    <View
+                      style={{ justifyContent: "center", alignItems: "center" }}
+                    >
                       <Text style={styles.uploadIcon}>🪪</Text>
                       <Text style={styles.uploadText}>Tap to upload ID</Text>
                       <Text style={styles.uploadHint}>
@@ -206,8 +238,6 @@ export default function IdentityVerificationScreen() {
               Use good lighting. No hat or sunglasses.
             </Text>
           </View>
-
-          {/* Action button */}
           <NextButton
             trigger={trigger}
             fields={["selfie", "idCard"]}
