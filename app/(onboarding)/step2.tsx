@@ -44,7 +44,7 @@ export type LocationIQResult = {
 export type LocationIQResponse = LocationIQResult[];
 
 const Screen = () => {
-  const { control, trigger } = useFormContext();
+  const { control } = useFormContext();
   const [addressValue, setAddressValue] = useState("");
   const [results, setResults] = useState<LocationIQResponse>([]);
   const [error, setError] = useState("");
@@ -145,7 +145,6 @@ const Screen = () => {
       </View>
       <View style={{ marginTop: 20 }}>
         <NextButton
-          trigger={trigger}
           fields={["address"]}
           nextRoute={nextRoute}
           lastCompletedStep={2}

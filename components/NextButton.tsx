@@ -5,13 +5,11 @@ import { useFormContext } from "react-hook-form";
 import { AccessibilityInfo, Text, TouchableOpacity } from "react-native";
 
 const NextButton = ({
-  trigger,
   fields,
   nextRoute,
   lastCompletedStep,
   onError,
 }: {
-  trigger: (name?: string | string[]) => Promise<boolean>;
   fields: string[];
   nextRoute: string;
   lastCompletedStep: number;
@@ -20,11 +18,12 @@ const NextButton = ({
   const setFormData = useKYCStore((state) => state.setFormData);
   const {
     formState: { errors },
+    trigger,
+    getValues
   } = useFormContext();
   const setLastCompletedStep = useKYCStore(
     (state) => state.setLastCompletedStep,
   );
-  const { getValues } = useFormContext();
   const handlePress = async () => {
     const isValid = await trigger(fields);
     if (isValid) {

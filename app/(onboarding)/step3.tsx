@@ -22,7 +22,7 @@ export default function IdentityVerificationScreen() {
   const CameraRef = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [isSelfieProcessing, setIsSelfieProcessing] = useState(false);
-  const { control, trigger } = useFormContext();
+  const { control } = useFormContext();
   const onChangeRef = useRef<((...event: any[]) => void) | null>(null);
 
   const pickDocument = async (onChange: (...event: any[]) => void) => {
@@ -239,7 +239,6 @@ export default function IdentityVerificationScreen() {
             </Text>
           </View>
           <NextButton
-            trigger={trigger}
             fields={["selfie", "idCard"]}
             nextRoute="/onboarding/review"
             lastCompletedStep={3}

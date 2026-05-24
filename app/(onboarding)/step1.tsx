@@ -17,8 +17,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const StepOneScreen = () => {
   const {
     control,
-    trigger,
-    getValues,
     formState: { errors },
   } = useFormContext();
   const [show, setShow] = useState(false);
@@ -188,7 +186,6 @@ const StepOneScreen = () => {
         </View>
         <NextButton
           onError={onError}
-          trigger={trigger}
           fields={["name", "email", "phone", "dob"]}
           nextRoute={nextRoute}
           lastCompletedStep={1}
