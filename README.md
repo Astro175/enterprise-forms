@@ -4,7 +4,7 @@ A multi-step KYC form that spans multiple screens but shares a single validation
 
 ## Architecture
 
-![Enterprise Form Architecture](./docs/architecture.png)
+![Enterprise Form Architecture](./docs/form_architecture.png)
 
 The FormProvider is the core of this architecture. It centralizes form state across all screens and exposes methods that trigger validation when a value is entered and the input loses focus, and again when the user completes a step. The provider validates each field against a single Zod schema that covers all steps and focuses the first field with an error.
 
